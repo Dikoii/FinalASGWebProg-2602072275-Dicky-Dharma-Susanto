@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FriendController;
+use App\Http\Controllers\NavigationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -15,8 +17,10 @@ Route::post('/confirm-overpayment', [AuthController::class, 'confirmOverpayment'
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [NavigationController::class, 'showHomePage'])->name('home');
 
+Route::get('/friends', [NavigationController::class, 'showFriendsPage'])->name('friends');
+Route::post('/add-friend/{id}', [FriendController::class, 'addFriend'])->name('addFriend');
+Route::post('/accept-friend/{id}', [FriendController::class, 'acceptFriend'])->name('acceptFriend');
+Route::post('/decline-friend/{id}', [FriendController::class, 'declineFriend'])->name('declineFriend');
 

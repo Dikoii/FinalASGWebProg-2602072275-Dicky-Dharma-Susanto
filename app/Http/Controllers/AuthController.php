@@ -83,7 +83,6 @@ class AuthController extends Controller
     } else if ($amount > $expectedFee) {
         $overpaid = $amount - $expectedFee;
 
-        // Store overpaid amount in session
         session(['overpaidAmount' => $overpaid, 'previousAmount' => $amount]);
 
         return redirect()->route('processPayment')->with([
@@ -91,7 +90,6 @@ class AuthController extends Controller
             'confirmationNeeded' => true,
         ]);
     } else {
-        // Create the user if the payment is exact
         return $this->finalizeRegistration($registrationData);
     }
 }
@@ -106,13 +104,10 @@ private function finalizeRegistration($registrationData, $overpaidAmount = 0)
         'field_of_work' => $registrationData['field_of_work'],
         'linkedin_username' => $registrationData['linkedin_username'],
         'mobile_number' => $registrationData['mobile_number'],
-        'coin_balance' => $overpaidAmount, // Initialize coin balance with overpaid amount
+        'coin_balance' => $overpaidAmount, 
     ]);
 
-    // Clear session data
     session()->forget(['registrationData', 'registrationFee', 'overpaidAmount', 'previousAmount']);
-
-    // Log the user in
     Auth::login($user);
 
     return redirect()->route('home')->with('success', 'Registration successful! Welcome!');
