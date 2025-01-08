@@ -15,7 +15,7 @@
     </style>
 </head>
 <body class="">
-        {{-- @include('layout.navbar') --}}
+        @include('layout.navbar')
         @yield('content')
         {{-- @include('layout.footer') --}}
 </body>

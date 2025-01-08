@@ -22,7 +22,8 @@ return new class extends Migration
             $table->string('mobile_number');
             $table->string('profile_picture')->nullable();
             $table->boolean('visibility')->default(true);
-            $table->integer('coin')->default(100);
+            $table->integer('coin_balance')->default(100);
+            $table->decimal('registration_fee', 10, 2)->nullable(); 
             $table->rememberToken();
             $table->timestamps();
         });
