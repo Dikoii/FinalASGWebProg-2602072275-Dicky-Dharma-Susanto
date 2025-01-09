@@ -2,6 +2,24 @@
 @section('title', 'Home Page')
 @section('content')
 <div class="container mt-5">
+    <form class="d-flex flex-row gap-2" method="GET" action="{{ route('home') }}" role="search">
+        <input class="form-control me-2" type="search" name="search" placeholder="Search by name" value="{{ request('search') }}" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+        <div class="dropdown d-flex align-items-center">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Filter 
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
+                <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5z"/>
+              </svg>
+            </button>
+            <ul class="dropdown-menu">
+                @foreach($genders as $gender)
+                    <li><a class="dropdown-item" href="{{ route('home', ['gender' => $gender]) }}">{{ ucfirst($gender) }}</a></li>
+                @endforeach
+                <li><a class="dropdown-item" href="{{ route('home') }}">Clear Filter</a></li>
+            </ul>
+        </div>
+    </form>
     <form method="POST" action="{{ route('logout') }}">
         @csrf
         <button type="submit" class="btn btn-danger mt-3">Logout</button>
@@ -14,8 +32,9 @@
                 <div class="card h-100">
                     <img src="{{ $user->profile_picture ?: asset('assets/default-profile.jpg') }}" class="card-img-top mx-auto" style="width: 8rem; height: 8rem;">
                     <div class="card-body">
-                        <h5 class="card-title">{{ $user->name }}</h5>
+                        <h5 class="card-title">Name: {{ $user->name }}</h5>
                         <p class="card-text">Field of Work: {{ $user->field_of_work }}</p>
+                        <p class="card-text">Gender: {{ $user->gender }}</p>
                     </div>
                     <form method="POST" action="{{ route('addFriend', $user->id) }}">
                         @csrf

@@ -9,11 +9,23 @@ use Illuminate\Support\Facades\Auth;
 
 class NavigationController extends Controller
 {
-    public function showHomePage()
+    public function showHomePage(Request $request)
     {
-        $users = User::where('id', '!=', Auth::id())->get();
+        $genders = ['male', 'female']; 
 
-        return view('home', compact('users'));
+        $query = User::where('id', '!=', Auth::id());
+    
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->has('gender') && !empty($request->gender)) {
+            $query->where('gender', $request->gender);
+        }
+
+        $users = $query->where('visibility', true)->get();
+    
+        return view('home', compact('users', 'genders'));
     }
 
     public function showFriendsPage()

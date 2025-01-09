@@ -2,9 +2,7 @@
 @section('title', 'Friends Page')
 @section('content')
 <div class="container mt-5">
-    <h3 class="text-center">Friends</h3>
-
-    <h4>Accepted Friends</h4>
+    <h4>Friend List</h4>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @forelse($acceptedFriends as $friendship)
             <div class="col">

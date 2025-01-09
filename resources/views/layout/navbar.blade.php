@@ -7,23 +7,19 @@
       <div class="collapse navbar-collapse d-flex align-items-center" id="navbarTogglerDemo02">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ route('home') }}">Home</a>
+                    <a class="nav-link {{ Request::is('home') || Request::is('/') ? 'text-decoration-underline text-primary' : '' }}" aria-current="page" href="{{ route('home') }}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('friends') }}">Friends</a>
+                    <a class="nav-link {{ Request::is('friends') ? 'text-decoration-underline text-primary' : '' }}" href="{{ route('friends') }}">Friends</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Avatar</a>
+                    <a class="nav-link {{ Request::is('') ? 'text-decoration-underline text-primary' : '' }}" href="#">Avatar</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Chat</a>
+                    <a class="nav-link {{ Request::is('') ? 'text-decoration-underline text-primary' : '' }}" href="#">Chat</a>
                 </li>
             </ul>
             <div class="d-flex flex-row gap-4"> 
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
                 <div class="dropdown">
                     <button class="btn btn-outline-primary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         {{ app()->getLocale() == 'en' ? 'English' : 'Indonesia' }}
