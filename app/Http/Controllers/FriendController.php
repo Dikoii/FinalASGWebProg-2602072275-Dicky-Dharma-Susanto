@@ -33,20 +33,17 @@ class FriendController extends Controller
 
     public function acceptFriend($id)
     {
-        // Find the friendship request
+
         $friendship = Friend::find($id);
         $currUser = Auth::user();
 
-        // Check if the friendship exists and is in the Pending state, and the current user is the receiver
         if ($friendship && $friendship->status === 'Pending' && $friendship->receiver_id === Auth::id()) {
-            // Accept the friendship
             $friendship->status = 'Accepted';
             $friendship->save();
 
-            // Create the chatroom with the correct user IDs
             Chatroom::create([
-                'user_id_1' => $friendship->sender_id, // Set user_id_1 to the sender_id
-                'user_id_2' => $friendship->receiver_id, // Set user_id_2 to the receiver_id
+                'user_id_1' => $friendship->sender_id, 
+                'user_id_2' => $friendship->receiver_id, 
             ]);
 
             return redirect()->back()->with('success', 'Friend request accepted.');

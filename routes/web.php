@@ -9,6 +9,12 @@ use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [NavigationController::class, 'showHomePage'])->name('home');
+Route::get('/set-locale/{locale}', function($locale){
+    if(in_array($locale, ['en','id'])){
+        session(['locale' => $locale]);
+    }
+    return redirect()->back();
+})->name('set-locale');
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

@@ -12,23 +12,48 @@ use Illuminate\Support\Facades\Auth;
 class NavigationController extends Controller
 {
     public function showHomePage(Request $request)
-    {
-        $genders = ['male', 'female']; 
+{
+    $genders = ['male', 'female'];
 
-        $query = User::where('id', '!=', Auth::id());
-    
-        if ($request->has('search') && !empty($request->search)) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
+    // Exclude the logged-in user
+    $query = User::where('id', '!=', Auth::id());
 
-        if ($request->has('gender') && !empty($request->gender)) {
-            $query->where('gender', $request->gender);
-        }
+    // Fetch the list of IDs of friends (both sender and receiver in 'Accepted' status)
+    $friendIds = Friend::where('status', 'Accepted')
+        ->where(function ($query) {
+            $query->where('sender_id', Auth::id())
+                  ->orWhere('receiver_id', Auth::id());
+        })
+        ->get()
+        ->flatMap(function($friendship) {
+            return [$friendship->sender_id, $friendship->receiver_id];
+        })
+        ->unique()
+        ->filter(function($id) {
+            return $id != Auth::id(); // Ensure the logged-in user is not included
+        })
+        ->toArray();
 
-        $users = $query->where('visibility', true)->get();
-    
-        return view('home', compact('users', 'genders'));
+    // Exclude friends from the results
+    $query->whereNotIn('id', $friendIds);
+
+    // Apply search filter if present
+    if ($request->has('search') && !empty($request->search)) {
+        $query->where('name', 'like', '%' . $request->search . '%');
     }
+
+    // Apply gender filter if present
+    if ($request->has('gender') && !empty($request->gender)) {
+        $query->where('gender', $request->gender);
+    }
+
+    // Get filtered users (who are visible and not in the friend list)
+    $users = $query->where('visibility', true)->get();
+
+    return view('home', compact('users', 'genders'));
+}
+
+    
 
     public function showFriendsPage()
     {
@@ -40,11 +65,12 @@ class NavigationController extends Controller
             })
             ->with(['sender', 'receiver'])
             ->get();
+    
         $pendingRequests = Friend::where('status', 'Pending')
             ->where('receiver_id', $user->id)
             ->with('sender')
             ->get();
-
+    
         return view('friend', compact('acceptedFriends', 'pendingRequests'));
     }
 

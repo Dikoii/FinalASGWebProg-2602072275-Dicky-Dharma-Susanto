@@ -26,10 +26,10 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
                         <li>
-                            <a class="dropdown-item" href="">English</a>
+                            <a class="dropdown-item" href="{{ route('set-locale', 'en') }}">English</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="">Indonesia</a>
+                            <a class="dropdown-item" href="{{ route('set-locale', 'id') }}">Indonesia</a>
                         </li>
                     </ul>
                 </div>
