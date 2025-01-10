@@ -42,6 +42,23 @@ class AuthController extends Controller
             'field_of_work' => 'required|string|regex:/^(?:[^,]+,){2}[^,]+$/',
             'linkedin_username' => 'required|regex:/^https:\/\/www\.linkedin\.com\/in\/[a-zA-Z0-9\-_]+$/',
             'mobile_number' => 'required|digits_between:10,15',
+        ], [
+            'name.required' => 'Your name is required.',
+            'name.string' => 'Your name must be a valid string.',
+            'name.max' => 'Your name must not exceed 255 characters.',
+            'email.required' => 'Your email is required.',
+            'email.email' => 'Your email must be a valid email address.',
+            'email.unique' => 'This email is already registered.',
+            'password.required' => 'A password is required.',
+            'password.regex' => 'Your password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+            'gender.required' => 'Please select your gender.',
+            'gender.in' => 'Gender must be either Male or Female.',
+            'field_of_work.required' => 'Your field of work is required.',
+            'field_of_work.regex' => 'Your field of work must contain at least three values separated by commas.',
+            'linkedin_username.required' => 'Your LinkedIn username is required.',
+            'linkedin_username.regex' => 'Please provide a valid LinkedIn profile link (e.g., https://www.linkedin.com/in/username).',
+            'mobile_number.required' => 'Your mobile number is required.',
+            'mobile_number.digits_between' => 'Your mobile number must be between 10 and 15 digits.',
         ]);
 
         $registrationFee = random_int(100000, 125000);
