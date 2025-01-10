@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Chat;
+use App\Models\Chatroom;
 use App\Models\Friend;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -31,8 +33,6 @@ class NavigationController extends Controller
     public function showFriendsPage()
     {
         $user = Auth::user();
-
-        // Retrieve accepted friends
         $acceptedFriends = Friend::where('status', 'Accepted')
             ->where(function ($query) use ($user) {
                 $query->where('sender_id', $user->id)
@@ -40,14 +40,60 @@ class NavigationController extends Controller
             })
             ->with(['sender', 'receiver'])
             ->get();
-
-        // Retrieve pending requests sent to the user
         $pendingRequests = Friend::where('status', 'Pending')
             ->where('receiver_id', $user->id)
             ->with('sender')
             ->get();
 
         return view('friend', compact('acceptedFriends', 'pendingRequests'));
+    }
+
+    public function showChatPage()
+    {
+        $user = Auth::user();
+        $chatrooms = Chatroom::with(['user1', 'user2'])
+            ->where('user_id_1', $user->id)
+            ->orWhere('user_id_2', $user->id)
+            ->get();
+
+        return view('chatroom', compact('chatrooms'));
+    }
+
+    public function showTopUpPage()
+    {
+        $user = Auth::user();
+        return view('topup', compact('user'));
+    }
+
+    public function showNotifications()
+    {
+        $user = Auth::user();
+
+        $friendRequests = Friend::where('receiver_id', $user->id)
+            ->where('status', 'Pending')
+            ->get();
+
+        $chatNotifications = Chat::whereHas('chatroom', function ($query) use ($user) {
+            $query->where('user_id_1', $user->id)
+                  ->orWhere('user_id_2', $user->id);
+        })
+        ->where('user_id', '!=', $user->id)
+        ->where('seen', false)
+        ->get();
+
+        Friend::where('receiver_id', $user->id)
+            ->where('status', 'Pending')
+            ->update(['seen' => true]);
+
+        Chat::whereHas('chatroom', function ($query) use ($user) {
+            $query->where('user_id_1', $user->id)
+                  ->orWhere('user_id_2', $user->id);
+        })
+        ->where('user_id', '!=', $user->id)
+        ->where('seen', false)
+        ->update(['seen' => true]);
+
+        return view('notification', compact('friendRequests', 'chatNotifications'));
     }
 
 }

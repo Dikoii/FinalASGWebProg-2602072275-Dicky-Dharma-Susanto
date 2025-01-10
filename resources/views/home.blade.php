@@ -20,10 +20,6 @@
             </ul>
         </div>
     </form>
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit" class="btn btn-danger mt-3">Logout</button>
-    </form>
     <h3 class="text-center my-4">Find and Add Friends</h3>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @forelse($users as $user)
